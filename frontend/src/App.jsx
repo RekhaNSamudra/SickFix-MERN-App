@@ -1,9 +1,13 @@
-import React from 'react'
+import React from "react";
+import AppRoutes from "./routes/AppRoutes";
 
 const App = () => {
   return (
-    <div>App</div>
-  )
-}
+    <>
+      {/* Global providers or components can go here */}
+      <AppRoutes /> {/* Handles all routing */}
+    </>
+  );
+};
 
-export default App
+export default App;
