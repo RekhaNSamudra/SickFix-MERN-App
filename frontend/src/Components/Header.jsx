@@ -5,7 +5,7 @@ const Header = () => {
   return (
     <>
       {/*  ----- left side ----- */}
-      <div className="flex flex-col md:flex-row flex-wrap bg-green-500 rounded-lg px-6 md:px-10 lg:px-20 my-5 mx-32">
+      <div className="flex flex-col md:flex-row flex-wrap bg-green-400 rounded-lg px-6 md:px-10 lg:px-20 my-5 mx-32">
         <div className="md:w-1/2 flex flex-col items-start justify-center gap-4 py-10 m-auto md:py-[10vw] md:mb-[-30px]">
           <p className="text-white text-3xl md:text-4xl lg:text-5xl font-semibold leading-tight md:leading-tight lg:leading-tight">
             Book Appointment <br />

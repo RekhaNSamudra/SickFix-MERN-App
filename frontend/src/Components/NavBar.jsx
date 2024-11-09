@@ -10,11 +10,12 @@ const NavBar = () => {
     <>
       <div className="flex items-center justify-between text-sm border-b border-b-gray-400 pt-4 mb-1 mx-32">
         <img
+          onClickCapture={() => navigate("/")}
           src={assets.logo}
           alt="sickfix logo"
           className="w-44 cursor-pointer"
         />
-        <ul className="hidden md:flex items-center gap-5 font-medium">
+        <ul className="hidden md:flex items-center gap-5 font-medium text-lg">
           <NavLink to={"/"}>
             <li>Home</li>
             <hr className="border-none outline-none h-0.5 bg-primary w-3/4 m-auto hidden mt-1" />
