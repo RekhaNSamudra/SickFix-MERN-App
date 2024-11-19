@@ -29,7 +29,7 @@ const NavBar = () => {
         <ul
           className={`flex-col md:flex md:flex-row md:gap-6 ${
             showMenu
-              ? "block bg-stone-200 z-50 absolute top-12 mt-8 right-12 rounded p-4 w-[200px]"
+              ? "block md:hidden bg-stone-200 z-50 absolute top-12 mt-8 right-12 rounded p-4 w-[200px]"
               : "hidden"
           }`}
         >
