@@ -3,11 +3,11 @@ import { assets } from "../assets/assets_frontend/assets";
 
 const Footer = () => {
   return (
-    <div className="mx-32">
-      <div className="flex flex-col sm:grid grid-cols-[3fr_1fr_1fr] text-sm gap-14 my-10 mt-40">
+    <div className="mx-12 sm:mx-24 md:mx-28 lg:mx-32">
+      <div className="flex flex-col sm:grid grid-cols-[3fr_1fr_1fr] text-sm gap-14 my-10 mt-20">
         {/* left section */}
-        <div>
-          <img className="w-60 mb-3" src={assets.logo} alt="" />
+        <div className="text-center sm:text-left">
+          <img className="w-60 mb-3 mx-auto sm:mx-0" src={assets.logo} alt="" />
           <p className="w-full md:w-2/3 text-gray-600 leading-6">
             Lorem Ipsum is simply dummy text of the printing and typesetting
             industry. Lorem Ipsum has been the industry's standard dummy text
@@ -16,7 +16,7 @@ const Footer = () => {
           </p>
         </div>
         {/* center section */}
-        <div>
+        <div className="text-center sm:text-left">
           <p className="text-xl font-medium mb-3">COMPANY</p>
           <ul className="flex flex-col gap-2 text-gray-600">
             <li>Home</li>
@@ -26,7 +26,7 @@ const Footer = () => {
           </ul>
         </div>
         {/* right section*/}
-        <div>
+        <div className="text-center sm:text-left">
           <p className="text-xl font-medium mb-3">GET IN TOUCH</p>
           <ul className="flex flex-col gap-2 text-gray-600">
             <li>+1-212-456-7890</li>

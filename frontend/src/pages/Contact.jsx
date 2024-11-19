@@ -4,7 +4,7 @@ import { assets } from "../assets/assets_frontend/assets";
 const Contact = () => {
   return (
     <>
-      <div className="mx-32">
+      <div className="mx-16 sm:mx-24 md:mx-28 lg:mx-32 overflow-x-hidden">
         <div className="text-center text-2xl text-gray-500 pt-10">
           <p>
             CONTACT <span className="text-gray-700 font-semibold ">US</span>

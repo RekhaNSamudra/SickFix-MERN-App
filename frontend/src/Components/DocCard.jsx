@@ -9,7 +9,7 @@ const DocCard = ({ item }) => {
         onClick={() => {
           navigate(`/appointment/${item._id}`), scrollTo(0, 0);
         }}
-        className="border border-blue-200 cursor-pointer rounded-xl overflow-hidden hover:translate-y-[-10px] transition-all duration-500"
+        className="border border-blue-200 cursor-pointer rounded-xl overflow-hidden hover:translate-y-[-10px] transition-all duration-500 h-auto"
       >
         <img className="bg-blue-50" src={item.image} alt="" />
         <div className="p-4">

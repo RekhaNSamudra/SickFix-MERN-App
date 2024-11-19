@@ -4,13 +4,13 @@ import { assets } from "../assets/assets_frontend/assets";
 const About = () => {
   return (
     <>
-      <div className="mx-32">
+      <div className="mx-16 sm:mx-24 md:mx-28 lg:mx-32 overflow-x-hidden">
         <div className="text-center text-2xl text-gray-500 pt-10 ">
           <p>
             ABOUT <span className="text-gray-700 font-semibold ">US</span>
           </p>
         </div>
-        <div className="flex flex-row md:flex-row my-10 gap-12">
+        <div className="flex flex-col md:flex-row my-10 gap-12">
           <img
             className="w-full max-w-[360px]"
             src={assets.about_image}
@@ -44,11 +44,11 @@ const About = () => {
         </div>
 
         <div className="text-xl my-4">
-          <p>
+          <p className="text-center">
             Why <span className="text-gray-700 font-semibold">Choose Us</span>{" "}
           </p>
         </div>
-        <div className="flex flex-col md:flex-row text-gray-600 mb-20">
+        <div className="flex flex-col md:flex-row text-gray-600 mb-20 mt-10">
           <div className="border px-10 md:px-16 sm:py-16 py-8 flex flex-col gap-5 hover:bg-primary hover:text-white transition-all duration-300">
             <b>Efficiency:</b>
             <p>

@@ -4,7 +4,7 @@ import { assets } from "../assets/assets_frontend/assets";
 import NavItem from "./NavItem";
 
 const NavBar = () => {
-  const [showMenu, setShowMenu] = useState(false);
+  const [showMenu, setShowMenu] = useState(true);
   const [token, setToken] = useState(true);
   const navigate = useNavigate();
 
@@ -16,8 +16,8 @@ const NavBar = () => {
   ];
 
   return (
-    <div className="sticky bg-white top-0 left-0 w-full py-4 z-50">
-      <div className="mx-12 sm:mx-24 md:mx-28 lg:mx-32 flex flex-row items-center justify-between">
+    <>
+      <div className="flex items-center justify-between text-sm border-b border-b-gray-400 pt-4 mb-1 mx-12 sm:mx-24 md:mx-28 lg:mx-32">
         <img
           onClickCapture={() => navigate("/")}
           src={assets.logo}
@@ -25,20 +25,12 @@ const NavBar = () => {
           className="w-20 sm:w-32 md:w-44 lg:w-44 cursor-pointer"
         />
 
-        {/* nav menu items */}
-        <ul
-          className={`flex-col md:flex md:flex-row md:gap-6 ${
-            showMenu
-              ? "block bg-stone-200 z-50 absolute top-12 mt-8 right-12 rounded p-4 w-[200px]"
-              : "hidden"
-          }`}
-        >
+        <ul className="hidden md:flex items-center gap-5 font-medium text-lg">
           {navMenu.map((item, index) => (
             <NavItem key={index} path={item.path} navItem={item.navItem} />
           ))}
         </ul>
 
-        {/* profile account */}
         <div className="flex items-center gap-4">
           {token ? (
             <div className="flex items-center gap-2 cursor-pointer group relative">
@@ -78,23 +70,58 @@ const NavBar = () => {
           ) : (
             <button
               onClick={() => navigate("/login")}
-              className="bg-primary hidden md:block text-white rounded-full p-1 px-2 sm:p-3 text-sm font-normal sm:font-medium"
+              className="bg-primary text-white rounded-full p-3 font-medium hidden md:block"
             >
               Create Account
             </button>
           )}
+          <img
+            className="w-6 md:hidden cursor-pointer"
+            onClick={() => setShowMenu(!showMenu)}
+            src={assets.menu_icon}
+            alt=""
+          />
         </div>
-
-        {/* ------ mobile view  menu ----- */}
-        <div
-          className="w-6 md:hidden cursor-pointer"
-          onClick={() => setShowMenu(!showMenu)}
-        >
-          <img src={showMenu ? assets.cross_icon : assets.menu_icon} alt="" />
-        </div>
+       
       </div>
-    </div>
+      <div className="mx-12 sm:mx-24 md:mx-28 lg:mx-32 h-full sm:hidden md:hidden lg:hidden">
+        {showMenu && (
+          <div className="fixed inset-0 top-20 bg-stone-100 z-10 p-6">
+            <img
+              className="w-6 absolute top-10 right-10"
+              src={assets.cross_icon}
+              alt=""
+              onClick={() => setShowMenu(false)}
+            />
+            <div>
+              <ul className="flex flex-col items-start gap-5 font-medium text-lg">
+                {navMenu.map((item, index) => (
+                  <NavItem
+                    key={index}
+                    path={item.path}
+                    navItem={item.navItem}
+                    onClick={() => setShowMenu(false)}
+                  />
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+      </div>
+     
+    </>
   );
 };
 
 export default NavBar;
+
+
+
+
+   {/* <ul
+          className={`md:flex items-center gap-5 font-medium text-lg ${
+            showMenu
+              ? "absolute top-16 right-0 m-5 w-[200px] p-4 gap-4 bg-stone-100 rounded-b-lg shadow-md z-10 flex-col"
+              : "hidden"
+          } md:block`} 
+        > */}

@@ -9,11 +9,11 @@ const SpecialityMenu = () => {
       className="flex flex-col items-center gap-4 py-16 text-gray-800"
     >
       <h1 className="text-3xl font-medium">Find by Speciality </h1>
-      <p className="w-1/3 text-sm text-center">
+      <p className="w-1/2 sm:w-1/3 text-sm text-center">
         Simply browse through our extensive list of trusted doctors, schedule
         your appointment hassle-free.
       </p>
-      <div className="flex flex-wrap sm:justify-center overflow-scroll gap-8 pt-5 w-full">
+      <div className="flex flex-wrap justify-center overflow-scroll gap-8 pt-5 w-full">
         {specialityData.map((item, index) => (
           <div key={index} className="flex sm:flex-col">
             <Link

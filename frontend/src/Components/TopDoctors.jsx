@@ -8,8 +8,8 @@ const TopDoctors = () => {
   const { doctors } = useContext(AppContext);
 
   return (
-    <div className="flex flex-col items-center gap-4 mx-32 my-16 text-gray-900">
-      <h1 className="text-3xl font-medium">Top Doctors to Book</h1>
+    <div className="flex flex-col items-center gap-4 mx-12 sm:mx-24 md:mx-28 lg:mx-32 my-8 text-gray-900">
+      <h1 className="text-xl sm:text-3xl sm:font-medium">Top Doctors to Book</h1>
       <p className="sm:w-1/3 text-center text-sm">
         Simply browse through our extensive list of trusted doctors.
       </p>

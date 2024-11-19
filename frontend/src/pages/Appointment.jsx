@@ -17,6 +17,7 @@ const Appointment = () => {
 
   const getAvailableSlots = () => {
     let today = new Date();
+    timeSlots = []; // Reset timeSlots to ensure fresh data
 
     for (let i = 0; i < 7; i++) {
       let currentDate = new Date(today);
@@ -26,21 +27,30 @@ const Appointment = () => {
       endtime.setHours(18, 0);
 
       if (today.getDate() === currentDate.getDate()) {
+        const currentHours = currentDate.getHours();
+        const currentMinutes = currentDate.getMinutes();
+
+        // Set the hour and minutes with ternary logic
         currentDate.setHours(
-          currentDate.getHours() <= 10 ? 10 : currentDate.getHours() + 1
+          currentHours < 10
+            ? 10
+            : currentMinutes < 30
+            ? currentHours
+            : currentHours + 1
         );
-        currentDate.setMinutes(currentDate.getMinutes() > 30 ? 0 : 30);
+        currentDate.setMinutes(currentMinutes < 30 ? 30 : 0);
       } else {
-        currentDate.setHours(10);
-        currentDate.setMinutes(0);
+        // Set to the default time for other days
+        currentDate.setHours(10, 0);
       }
 
       let dailySlots = []; // Array to store slots for the current day
 
       while (currentDate < endtime) {
-        let formattedTime = currentDate.toLocaleString([], {
+        let formattedTime = currentDate.toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
+          hour12: true, // Display time in 12-hour format with AM/PM
         });
 
         // Add the time slot for the current day
@@ -53,7 +63,7 @@ const Appointment = () => {
       }
       // Push the object with date and time slots for this day
       timeSlots.push({
-        date: currentDate, // Format the date as a string
+        date: currentDate,
         slots: dailySlots,
       });
     }
@@ -64,24 +74,22 @@ const Appointment = () => {
     getAvailableSlots();
   }, [docInfo]);
 
-  // useEffect(() => {
-  //   console.log("slots", docSlots);
-  // }, [docSlots]);
-
   return (
     docInfo && (
-      <div className="mx-32">
-        <div className="flex flex-col sm:flex-row gap-4 mt-6">
-          <div>
+      <div className="mx-16 sm:mx-24 md:mx-28 lg:mx-32 mt-5 overflow-x-hidden">
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* doctor image */}
+          <div className="w-full md:w-1/4">
             <img
-              className="bg-primary w-full sm:max-w-72 rounded-lg"
+              className="bg-primary sm:max-w-72 rounded-lg w-full"
               src={docInfo.image}
               alt=""
             />
           </div>
 
-          <div className="flex flex-col gap-6">
-            <div className="flex-1 border border-gray-400 rounded-lg p-8 py-7 mx-2 sm:mx-0 sm:mt-0 mt-[-80px]">
+          {/* doctor's info */}
+          <div className="w-full md:w-3/4">
+            <div className="flex-1 border border-gray-400 rounded-lg p-8 py-7 mx-2 sm:mx-0 mt-6 md:mt-0">
               <p className="flex items-center gap-2 text-gray-900 text-2xl font-medium">
                 {docInfo.name}
                 <img className="w-5" src={assets.verified_icon} alt="" />
@@ -109,15 +117,20 @@ const Appointment = () => {
               </p>
             </div>
 
-            <div>
-              <p className="text-lg font-medium text-gray-800">Booking slots</p>
-              <div className="flex flex-row gap-4 mt-3">
+            {/* Booking Slots */}
+            <div className="mt-5">
+              <p className="text-2xl font-medium text-gray-800">
+                Booking slots
+              </p>
+              {/* weekday slots */}
+              <div className="flex flex-row gap-4 mt-3 overflow-x-auto">
                 {docSlots.map((item, index) => (
                   <div key={index}>
                     <div
                       onClick={() => setSlotIndex(index)}
-                      className={`border rounded p-4 w-16 cursor-pointer my-6 ${slotIndex === index ? "bg-primary text-white" : ""
-                        }`}
+                      className={`border rounded p-4 w-16 cursor-pointer my-6 ${
+                        slotIndex === index ? "bg-primary text-white" : ""
+                      }`}
                     >
                       <p>
                         {item.date.toLocaleString("default", {
@@ -129,25 +142,33 @@ const Appointment = () => {
                   </div>
                 ))}
               </div>
-              {docSlots[slotIndex]?.slots?.length > 0 && (
-                <div className="flex flex-row gap-3 max-w-[800px] overflow-x-auto ">
+              {/* time slots */}
+              {docSlots[slotIndex]?.slots?.length > 0 ? (
+                <div className="flex flex-row gap-3 overflow-x-auto">
                   {docSlots[slotIndex].slots.map((slot, idx) => (
                     <div
                       key={idx}
                       onClick={() => setSlotTime(slot.time)}
-                      className={`p-5 border rounded-lg cursor-pointer ${slot.time === slotTime ? "bg-primary text-white" : ""
-                        }`}
+                      className={`p-5 border w-28 whitespace-nowrap rounded-3xl cursor-pointer ${
+                        slot.time === slotTime ? "bg-primary text-white" : ""
+                      }`}
                     >
                       <p>{slot.time}</p>
                     </div>
                   ))}
                 </div>
+              ) : (
+                <h1>
+                  No slots are available for today. Please book starting from
+                  tomorrow.
+                </h1>
               )}
 
               <button className="bg-primary text-white rounded-full mt-8 text-sm font-medium px-14 py-3 hover:bg-green-400 hover:font-semibold">
                 Book an appointment
               </button>
             </div>
+
             {/* Listing Related Doctors */}
             <RelatedDoctors docId={docId} speciality={docInfo.speciality} />
           </div>
