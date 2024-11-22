@@ -68,7 +68,7 @@ const addDoctor = async (req, res) => {
       email,
       password: hashedPassword,
       image: imageUrl,
-      address: JSON.parse(address),
+      address: address,
       date: Date.now(),
       speciality,
       experience,

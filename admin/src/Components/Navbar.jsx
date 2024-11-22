@@ -17,7 +17,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex flex-row items-center justify-between mx-20 px-4 sm:px-10 bg-white">
+    <div className="sticky top-0 flex flex-row items-center justify-between px-4 sm:px-10 bg-white">
       <div className="flex items-center text-xs gap-2">
         <img
           className="w-20 sm:w-32 md:w-44 lg:w-44 cursor-pointer"
@@ -30,7 +30,7 @@ const Navbar = () => {
       </div>
       <button
         onClick={logout}
-        className="bg-primary text-white rounded-full text-sm px-10 py-2"
+        className="bg-primary text-white rounded-full text-sm px-10 py-2 mr-10"
       >
         Logout
       </button>
