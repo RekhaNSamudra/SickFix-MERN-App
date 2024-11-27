@@ -26,7 +26,7 @@ const AdminContextProvider = ({ children }) => {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.message);
     }
   };
 
