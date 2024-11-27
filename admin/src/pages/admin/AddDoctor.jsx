@@ -50,18 +50,19 @@ const AddDoctor = () => {
       const docDetails = new FormData();
 
       docDetails.append("image", docImg);
+
+      // Combine address1 and address2 into a single "address" key
+      const address = {
+        line1: formData.address1,
+        line2: formData.address2,
+      };
+
+      docDetails.append("address", JSON.stringify(address)); // Append the address as JSON
+
       // Loop through the formData object and append each key-value pair to FormData
       Object.keys(formData).forEach((key) => {
-        if (key === "address1" || key === "address2") {
-          // Combine address1 and address2 into a single "address" key
-          const address = {
-            line1: formData.address1,
-            line2: formData.address2,
-          };
-          docDetails.append("address", JSON.stringify(address)); // Append the address as JSON
-        } else {
-          // Append other fields normally
-          docDetails.append(key, formData[key]);
+        if (key !== "address1" && key !== "address2") {
+          docDetails.append(key, formData[key]); // Append all other fields
         }
       });
 
@@ -82,11 +83,11 @@ const AddDoctor = () => {
         setDocImg(null); // Reset the image state
         setFormData(initialFormData); // Reset the form data
       } else {
-        toast.error(data.error);
+        toast.error(data.message);
       }
     } catch (error) {
       // If an error occurs during the API call or other issues, catch the error
-      toast.error(error.message);
+      toast.error(error.response.data.message);
       console.log(error);
     }
   };
@@ -127,7 +128,7 @@ const AddDoctor = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  required
+                  // required
                 />
               </div>
 

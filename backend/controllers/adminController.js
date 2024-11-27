@@ -2,7 +2,7 @@ import validator from "validator";
 import bcrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
 import doctorModel from "../models/doctorModels.js";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 
 // API for adding doctor
 const addDoctor = async (req, res) => {
@@ -46,7 +46,8 @@ const addDoctor = async (req, res) => {
 
     // validating strong password
     if (password.length < 8) {
-      return res.json({
+      console.log("Password validation failed");
+      return res.status(400).json({
         success: false,
         message: "Please enter a strong password",
       });
@@ -65,7 +66,7 @@ const addDoctor = async (req, res) => {
     // data format for the doctor
     const doctorData = {
       name,
-      email,
+      email: email.toLowerCase(),
       password: hashedPassword,
       image: imageUrl,
       address: address,
@@ -75,6 +76,7 @@ const addDoctor = async (req, res) => {
       degree,
       fees,
       about,
+      available: true, // Set the default value for `available`
     };
 
     const newDoctor = new doctorModel(doctorData);
@@ -96,9 +98,8 @@ const loginAdmin = async (req, res) => {
       email === process.env.ADMIN_EMAIL &&
       password === process.env.ADMIN_PASSWORD
     ) {
-
-      const token = jwt.sign(email+password, process.env.JWT_SECRET)
-      res.json({ success: true, token}) 
+      const token = jwt.sign(email + password, process.env.JWT_SECRET);
+      res.json({ success: true, token });
     } else {
       res.json({ success: false, message: "Invalid Credentials" });
     }
@@ -108,4 +109,16 @@ const loginAdmin = async (req, res) => {
   }
 };
 
-export { addDoctor, loginAdmin };
+//API to get all doctors list for admin panel
+
+const allDoctors = async (req, res) => {
+  try {
+    const doctors = await doctorModel.find({}).select("-password");
+    res.json({ success: true, doctors });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export { addDoctor, loginAdmin, allDoctors };
