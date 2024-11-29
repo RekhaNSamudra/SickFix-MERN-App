@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets_frontend/assets";
 import NavItem from "./NavItem";
+import { AppContext } from "../Context/AppContext";
+import { toast } from "react-toastify";
 
 const NavBar = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const [token, setToken] = useState(true);
+
+  // const [token, setToken] = useState(true);// this token is for temporary use...
+  const { token, setToken, userData } = useContext(AppContext);
+
   const navigate = useNavigate();
 
   const navMenu = [
@@ -14,6 +19,13 @@ const NavBar = () => {
     { path: "/about", navItem: "About" },
     { path: "/contact", navItem: "Contact" },
   ];
+
+  const logout = () => {
+    setToken(false)
+    localStorage.removeItem('token')
+    toast.success("Logged out successfully")
+    navigate("/")
+  }
 
   return (
     <div className="sticky bg-white top-0 left-0 w-full py-4 z-50">
@@ -40,11 +52,12 @@ const NavBar = () => {
 
         {/* profile account */}
         <div className="flex items-center gap-4">
-          {token ? (
+          {token && userData ? (
             <div className="flex items-center gap-2 cursor-pointer group relative">
               <img
                 className="rounded-full w-12"
-                src={assets.profile_pic}
+                // src={assets.profile_pic}
+                src={userData.image}
                 alt="my profile"
               />
               <img
@@ -67,7 +80,8 @@ const NavBar = () => {
                     My Appointments
                   </p>
                   <p
-                    onClick={() => setToken(false)}
+                    // onClick={() => setToken(false)}
+                    onClick={logout}
                     className="hover:text-black font-medium"
                   >
                     Logout
