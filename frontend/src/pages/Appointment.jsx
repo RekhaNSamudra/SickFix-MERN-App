@@ -62,7 +62,7 @@ const Appointment = () => {
         let month = currentDate.getMonth() + 1;
         let year = currentDate.getFullYear();
 
-        const slotDate = `${day}_${month}_${year}`;
+        const slotDate = `${day}/${month}/${year}`;
         const isSlotBooked =
           docInfo?.slots_booked?.[slotDate]?.includes(formattedTime);
 
@@ -97,7 +97,7 @@ const Appointment = () => {
       let month = date.getMonth() + 1;
       let year = date.getFullYear();
 
-      let slotDate = day + "_" + month + "_" + year;
+      let slotDate = day + "/" + month + "/" + year;
 
       const { data } = await axios.post(
         backendUrl + "/api/user/book-appointment",

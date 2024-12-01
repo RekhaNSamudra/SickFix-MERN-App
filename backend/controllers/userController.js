@@ -136,18 +136,18 @@ const updateProfile = async (req, res) => {
 // API to book appointment
 const bookAppointment = async (req, res) => {
   try {
-      // Extract data from the request body
+    // Extract data from the request body
     const { userId, docId, slotTime, slotDate } = req.body;
 
-      // Fetch the doctor's data from the database (excluding password)
+    // Fetch the doctor's data from the database (excluding password)
     const docData = await doctorModel.findById(docId).select("-password");
 
-     // Check if the doctor exists
+    // Check if the doctor exists
     if (!docData) {
       return res.json({ success: false, message: "Doctor not available" });
     }
 
-       // Get the already booked slots for the doctor
+    // Get the already booked slots for the doctor
     let slots_booked = docData.slots_booked;
 
     // checking for slot availability
@@ -155,7 +155,7 @@ const bookAppointment = async (req, res) => {
       if (slots_booked[slotDate].includes(slotTime)) {
         return res.json({ success: false, message: "Slots not available" });
       } else {
-              // If the time slot is available, add it to the booked slots
+        // If the time slot is available, add it to the booked slots
         slots_booked[slotDate].push(slotTime);
       }
     } else {
@@ -164,12 +164,12 @@ const bookAppointment = async (req, res) => {
       slots_booked[slotDate].push(slotTime);
     }
 
-     // Fetch the user's data from the database (excluding password)
+    // Fetch the user's data from the database (excluding password)
     const userData = await userModel.findById(userId).select("-password");
 
-     // Remove the slots_booked field from the doctor's data before saving it to the appointment
+    // Remove the slots_booked field from the doctor's data before saving it to the appointment
     //  console.log("slots booked ", docData.slots_booked)
-    delete docData.slots_booked; 
+    delete docData.slots_booked;
 
     // Create appointment data
     const appointmentData = {
@@ -195,4 +195,56 @@ const bookAppointment = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser, getProfile, updateProfile, bookAppointment };
+// API to get user appointments for frontend my-appointments page
+const listAppointments = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const appointments = await appointmentModel.find({ userId });
+    return res.json({ success: true, appointments });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+// API to cancel the appointment
+const cancelAppointment = async (req, res) => {
+  try {
+    const { userId, appointmentId } = req.body;
+    const appointmentData = await appointmentModel.findById( appointmentId );
+
+    if (appointmentData.userId !== userId) {
+      return res.json({ success: false, message: "Unauthorized action" });
+    }
+
+    await appointmentModel.findByIdAndUpdate(appointmentId, {
+      cancelled: true,
+    });
+
+    // releasing that doctor
+    const { docId, slotDate, slotTime } = appointmentData;
+    const doctorData = await doctorModel.findById( docId );
+
+    let slots_booked = doctorData.slots_booked;
+    slots_booked[slotDate] = slots_booked[slotDate].filter(
+      (e) => e !== slotTime
+    );
+
+    await doctorModel.findByIdAndUpdate(docId, { slots_booked });
+
+    res.json({ success: true, message: "Appointment cancelled" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export {
+  registerUser,
+  loginUser,
+  getProfile,
+  updateProfile,
+  bookAppointment,
+  listAppointments,
+  cancelAppointment,
+};
