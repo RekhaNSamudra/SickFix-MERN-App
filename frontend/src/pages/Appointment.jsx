@@ -1,15 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { AppContext } from "../Context/AppContext";
 import { assets } from "../assets/assets_frontend/assets";
 import RelatedDoctors from "../Components/RelatedDoctors";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const Appointment = () => {
   const [docSlots, setDocSlots] = useState([]);
   const [slotIndex, setSlotIndex] = useState(0);
   const [slotTime, setSlotTime] = useState("");
-  const { doctors, currencySymbol } = useContext(AppContext);
+  const { doctors, currencySymbol, backendUrl, token, getDoctorsData } =
+    useContext(AppContext);
   const { docId } = useParams();
+  const navigate = useNavigate();
 
   // Find the doctor with the matching ID
   const docInfo = doctors.find((doc) => doc._id === docId);
@@ -47,15 +51,25 @@ const Appointment = () => {
       let dailySlots = []; // Array to store slots for the current day
 
       while (currentDate < endtime) {
+        // Display time in 12-hour format with AM/PM
         let formattedTime = currentDate.toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
-          hour12: true, // Display time in 12-hour format with AM/PM
+          hour12: true,
         });
+
+        let day = currentDate.getDate();
+        let month = currentDate.getMonth() + 1;
+        let year = currentDate.getFullYear();
+
+        const slotDate = `${day}_${month}_${year}`;
+        const isSlotBooked =
+          docInfo?.slots_booked?.[slotDate]?.includes(formattedTime);
 
         // Add the time slot for the current day
         dailySlots.push({
           time: formattedTime,
+          isBooked: isSlotBooked, // Mark the slot as booked or available
         });
 
         // Move the current date forward by 30 minutes for the next slot
@@ -68,6 +82,42 @@ const Appointment = () => {
       });
     }
     setDocSlots(timeSlots);
+  };
+
+  const bookAppointment = async () => {
+    if (!token) {
+      toast.warn("Login to book Appointment");
+      return navigate("/login");
+    }
+
+    try {
+      const date = docSlots[slotIndex].date;
+
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      let year = date.getFullYear();
+
+      let slotDate = day + "_" + month + "_" + year;
+
+      const { data } = await axios.post(
+        backendUrl + "/api/user/book-appointment",
+        { docId, slotDate, slotTime },
+        {
+          headers: { Authorization: `Bearer ${token}` }, // Pass the auth token in headers
+        }
+      );
+
+      if (data.success) {
+        toast.success(data.message);
+        getDoctorsData();
+        navigate("/my-appointments");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
   };
 
   useEffect(() => {
@@ -148,10 +198,18 @@ const Appointment = () => {
                   {docSlots[slotIndex].slots.map((slot, idx) => (
                     <div
                       key={idx}
-                      onClick={() => setSlotTime(slot.time)}
+                      onClick={() => !slot.isBooked && setSlotTime(slot.time)} // Prevent selection of booked slots
                       className={`p-5 border w-28 whitespace-nowrap rounded-3xl cursor-pointer ${
-                        slot.time === slotTime ? "bg-primary text-white" : ""
+                        slot.isBooked
+                          ? "bg-gray-100 text-gray-400 cursor-not-allowed" // Gray out booked slots
+                          : slot.time === slotTime
+                          ? "bg-primary text-white"
+                          : ""
                       }`}
+                      // onClick={() => setSlotTime(slot.time)}
+                      // className={`p-5 border w-28 whitespace-nowrap rounded-3xl cursor-pointer ${
+                      //   slot.time === slotTime ? "bg-primary text-white" : ""
+                      // }`}
                     >
                       <p>{slot.time}</p>
                     </div>
@@ -164,7 +222,10 @@ const Appointment = () => {
                 </h1>
               )}
 
-              <button className="bg-primary text-white rounded-full mt-8 text-sm font-medium px-14 py-3 hover:bg-green-400 hover:font-semibold">
+              <button
+                onClick={bookAppointment}
+                className="bg-primary text-white rounded-full mt-8 text-sm font-medium px-14 py-3 hover:bg-green-400 hover:font-semibold"
+              >
                 Book an appointment
               </button>
             </div>

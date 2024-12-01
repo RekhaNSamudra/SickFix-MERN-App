@@ -58,6 +58,7 @@ const AppContextProvider = ({ children }) => {
     <AppContext.Provider
       value={{
         doctors,
+        getDoctorsData,
         currencySymbol,
         token,
         setToken,
