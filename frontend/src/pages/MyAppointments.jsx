@@ -149,7 +149,7 @@ const MyAppointments = () => {
                   ) : (
                     <button
                       onClick={() => appointmentRazorpay(item._id)}
-                      className="  hover:bg-primary hover:text-white"
+                      className="border py-2 sm:min-w-48 hover:bg-primary hover:text-white"
                     >
                       Pay Online
                     </button>

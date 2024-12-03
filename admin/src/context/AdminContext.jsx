@@ -9,6 +9,8 @@ const AdminContextProvider = ({ children }) => {
   const [aToken, setAToken] = useState(localStorage.getItem("aToken") || "");
   const [doctors, setDoctors] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [dashboardData, setDashboardData] = useState(false);
+
   // Vite uses import.meta.env for environment variables instead of the Node.js process.env
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -44,6 +46,21 @@ const AdminContextProvider = ({ children }) => {
       });
       if (data.success) {
         setAppointments(data.appointments);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const getDashboardData = async () => {
+    try {
+      const { data } = await axios.get(backendUrl + "/api/admin/dashboard", {
+        headers: { Authorization: `Bearer ${aToken}` },
+      });
+      if (data.success) {
+        setDashboardData(data.dashData);
       } else {
         toast.error(data.message);
       }
@@ -98,6 +115,8 @@ const AdminContextProvider = ({ children }) => {
         setAppointments,
         getAllAppointments,
         cancelAppointments,
+        dashboardData,
+        getDashboardData,
       }}
     >
       {children}
