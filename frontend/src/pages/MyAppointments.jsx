@@ -2,10 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../Context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const MyAppointments = () => {
   const { backendUrl, token, getDoctorsData } = useContext(AppContext);
   const [appointments, setAppointments] = useState([]);
+  const navigate = useNavigate();
 
   const getUserAppointments = async () => {
     try {
@@ -37,6 +39,56 @@ const MyAppointments = () => {
         getDoctorsData();
       } else {
         toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
+  const initPay = (order) => {
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: order.amount,
+      currency: order.currency,
+      name: "Appointment Payment",
+      description: "Appointment Payment",
+      order_id: order.id,
+      receipt: order.receipt,
+      handler: async (response) => {
+        console.log(response);
+        try {
+          const { data } = axios.post(
+            backendUrl + "/api/user/verify-payment",
+            response,
+            {
+              headers: { Authorization: `Bearer ${token}` }, // Pass the auth token in headers
+            }
+          );
+          if (data.success) {
+            getUserAppointments();
+            navigate("/my-appointments");
+          }
+        } catch (error) {}
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open(); // opens razorpay as pop-up
+  };
+
+  const appointmentRazorpay = async (appointmentId) => {
+    try {
+      const { data } = await axios.post(
+        backendUrl + "/api/user/payment-razorpay",
+        { appointmentId },
+        {
+          headers: { Authorization: `Bearer ${token}` }, // Pass the auth token in headers
+        }
+      );
+
+      if (data.success) {
+        initPay(data.order);
       }
     } catch (error) {
       console.log(error);
@@ -90,9 +142,19 @@ const MyAppointments = () => {
                 </button>
               ) : (
                 <>
-                  <button className="border py-2 sm:min-w-48 hover:bg-primary hover:text-white">
-                    Pay Online
-                  </button>
+                  {item.payment ? (
+                    <button className="border py-2 sm:min-w-48 bg-green-500 text-white">
+                      Paid
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => appointmentRazorpay(item._id)}
+                      className="  hover:bg-primary hover:text-white"
+                    >
+                      Pay Online
+                    </button>
+                  )}
+
                   <button
                     onClick={() => cancelAppointment(item._id)}
                     className="border py-2 sm:min-w-48 hover:bg-red-400 hover:text-white"
