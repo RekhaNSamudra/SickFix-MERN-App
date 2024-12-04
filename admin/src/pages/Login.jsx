@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { AdminContext } from "../context/AdminContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { DoctorContext } from "../context/DoctorContext";
 
 const Login = () => {
   // State to toggle between "Admin" and "Doctor" login
@@ -12,6 +13,7 @@ const Login = () => {
 
   // Context values for setting authentication token and backend URL
   const { setAToken, backendUrl } = useContext(AdminContext);
+  const { setDToken } = useContext(DoctorContext);
 
   // Handles input field changes and updates formData state dynamically
   const handleInputChange = (e) => {
@@ -21,19 +23,21 @@ const Login = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+  
     try {
-      // Determines the API endpoint based on the current state (Admin or Doctor)
-      const endpoint =
-        state === "Admin" ? "/api/admin/login" : "/api/doctor/login";
-
+      // Determines the API endpoint and token storage key based on the current state
+      const isAdmin = state === "Admin";
+      const endpoint = isAdmin ? "/api/admin/login" : "/api/doctor/login";
+      const tokenKey = isAdmin ? "aToken" : "dToken";
+      const setToken = isAdmin ? setAToken : setDToken;
+  
       // Sends a POST request to the appropriate login endpoint
       const { data } = await axios.post(`${backendUrl}${endpoint}`, formData);
-
-      // If login is successful, stores the token in localStorage and context
+  
       if (data.success) {
         console.log("token", data.token);
-        localStorage.setItem("aToken", data.token);
-        setAToken(data.token); // Updates context with the token
+        localStorage.setItem(tokenKey, data.token);
+        setToken(data.token); // Updates context with the token
         toast.success("Login successful!");
       } else {
         toast.error(data.message);
@@ -43,6 +47,7 @@ const Login = () => {
       toast.error("Something went wrong. Please try again.");
     }
   };
+  
 
   return (
     <form onSubmit={onSubmitHandler} className="min-h-[80vh] flex items-center">

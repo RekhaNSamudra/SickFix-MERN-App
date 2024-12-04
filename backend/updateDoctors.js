@@ -28,3 +28,4 @@ const updateDoctors = async () => {
 };
 
 updateDoctors();
+

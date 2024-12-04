@@ -7,11 +7,13 @@ import { assets } from "../../assets/assets_admin/assets";
 const AllAppointments = () => {
   const { aToken, appointments, getAllAppointments, cancelAppointments } = useContext(AdminContext);
   const { calculateAge, currency } = useContext(AppContext);
+  
   useEffect(() => {
     if (aToken) {
       getAllAppointments();
     }
   }, [aToken]);
+
   return (
     <div className="w-full max-w-6xl m-5">
       <p className="mb-3 text-lg font-medium">All Appointments</p>
@@ -26,7 +28,7 @@ const AllAppointments = () => {
           <p>Actions</p>
         </div>
 
-        {appointments.map((item, index) => (
+        {appointments.reverse().map((item, index) => (
           <div
             className="flex flex-wrap justify-between items-center max-sm:gap-2 sm:grid sm:grid-cols-[0.5fr_3fr_1fr_3fr_3fr_1fr_1fr] text-gray-500 border-b px-6 py-3 hover:bg-gray-100"
             key={index}
@@ -40,6 +42,7 @@ const AllAppointments = () => {
               />
               <p>{item.userData.name}</p>
             </div>
+            {console.log("item.userData.dob", item.userData.dob)}
             <p className="max-sm:hidden">{calculateAge(item.userData.dob)}</p>
             <p>
               {item.slotTime}, &nbsp;{item.slotDate}

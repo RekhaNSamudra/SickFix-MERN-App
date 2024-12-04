@@ -285,7 +285,7 @@ const verifyPayment = async (req, res) => {
 
     const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id);
 
-    // console.log("order info...", orderInfo)
+    console.log("order info...", orderInfo)
     if (orderInfo.status === "paid") {
       await appointmentModel.findByIdAndUpdate(orderInfo.receipt, {
         payment: true,

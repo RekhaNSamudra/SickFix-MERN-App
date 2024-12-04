@@ -1,15 +1,17 @@
 import React, { useContext } from "react";
 import { AdminContext } from "../context/AdminContext";
-import { NavLink } from "react-router-dom";
+import { DoctorContext } from "../context/DoctorContext";
+import SidebarItem from "./SidebarItem";
 import { assets } from "../assets/assets_admin/assets";
 
 const Sidebar = () => {
   const { aToken } = useContext(AdminContext);
+  const { dToken } = useContext(DoctorContext);
 
-  const navLinks = [
+  const navLinksAdmin = [
     { to: "/admin-dashboard", icon: assets.home_icon, label: "Dashboard" },
     {
-      to: "/all-apponitments",
+      to: "/all-appointments",
       icon: assets.appointment_icon,
       label: "Appointments",
     },
@@ -17,18 +19,20 @@ const Sidebar = () => {
     { to: "/doctors-list", icon: assets.people_icon, label: "Doctors List" },
   ];
 
+  const navLinksDoctor = [
+    { to: "/doctor-dashboard", icon: assets.home_icon, label: "Dashboard" },
+    {
+      to: "/doctor-appointments",
+      icon: assets.appointment_icon,
+      label: "Appointments",
+    },
+    { to: "/doctor-profile", icon: assets.people_icon, label: "Profile" },
+  ];
+
   return (
     <div className="min-h-screen bg-white border-r">
-      {aToken && (
-        <ul className="text-[#515151] mt-5">
-          {navLinks.map(({ to, icon, label }) => (
-            <NavLink className={({isActive})=> `flex items-center gap-3 px-3 py-3.5 md:px-9 md:min-w-72 cursor-pointer ${isActive ? "bg-[#F2F3FF] border-r-4 border-primary" : ""}`} key={label} to={to}>
-              <img src={icon} alt="" />
-              <p>{label}</p>
-            </NavLink>
-          ))}
-        </ul>
-      )}
+      <SidebarItem token={aToken} navLinks={navLinksAdmin} />
+      <SidebarItem token={dToken} navLinks={navLinksDoctor} />
     </div>
   );
 };

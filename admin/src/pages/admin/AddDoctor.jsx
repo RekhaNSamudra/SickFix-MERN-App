@@ -66,10 +66,6 @@ const AddDoctor = () => {
         }
       });
 
-      // docDetails.forEach((value, key) => {
-      //   console.log(`${key}:`, value);
-      // });
-
       // Sending the FormData to the backend with an API POST request
       const { data } = await axios.post(
         backendUrl + "/api/admin/add-doctor", // Backend URL to handle doctor creation
@@ -94,8 +90,8 @@ const AddDoctor = () => {
 
   return (
     <div className="w-full">
-      <p className="text-lg font-medium p-5 m-3">Add Doctor</p>
-      <form className="m-5 w-full" onSubmit={handleSubmit}>
+      <p className="text-lg font-medium p-5 mt-3">Add Doctor</p>
+      <form className="m-5 w-full mt-0" onSubmit={handleSubmit}>
         <div className="bg-white p-8 rounded w-full border max-w-4xl max-h-[80vh] overflow-y-scroll">
           <div className="flex items-center gap-4 mb-8 text-gray-500 ">
             <label htmlFor="doc-img">

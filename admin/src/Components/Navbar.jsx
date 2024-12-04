@@ -3,16 +3,24 @@ import { AdminContext } from "../context/AdminContext";
 import { assets } from "../assets/assets_admin/assets";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { DoctorContext } from "../context/DoctorContext";
 
 const Navbar = () => {
   const { aToken, setAToken } = useContext(AdminContext);
-
+  const { dToken, setDToken } = useContext(DoctorContext);
   const navigate = useNavigate();
 
   const logout = () => {
-    navigate("/");
-    aToken && setAToken(""); // Clears the authentication token from context if it exists
-    aToken && localStorage.removeItem("aToken"); // Removes the authentication token from localStorage if it exists
+    // Clear tokens from context and localStorage
+    if (dToken) {
+      setDToken("");
+      localStorage.removeItem("dToken");
+    }
+    if (aToken) {
+      setAToken("");
+      localStorage.removeItem("aToken");
+    }
+    navigate("/login");
     toast.success("Logout successful!");
   };
 

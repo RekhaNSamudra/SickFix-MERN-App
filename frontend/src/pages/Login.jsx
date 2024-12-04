@@ -66,7 +66,7 @@ const Login = () => {
     }
   };
 
-  console.log("user", user.email, user.password, user.name);
+  // console.log("user", user.email, user.password, user.name);
 
   return (
     <>

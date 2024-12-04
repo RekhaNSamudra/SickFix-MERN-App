@@ -35,6 +35,13 @@ const MyAppointments = () => {
       );
       if (data.success) {
         toast.success(data.message);
+        setAppointments((prevAppointments) =>
+          prevAppointments.map((appointment) =>
+            appointment._id === appointmentId
+              ? { ...appointment, cancelled: true }
+              : appointment
+          )
+        );
         getUserAppointments();
         getDoctorsData();
       } else {
@@ -49,27 +56,43 @@ const MyAppointments = () => {
   const initPay = (order) => {
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount: order.amount,
+      amount: order.amount * 10,
       currency: order.currency,
       name: "Appointment Payment",
       description: "Appointment Payment",
       order_id: order.id,
       receipt: order.receipt,
       handler: async (response) => {
-        console.log(response);
+        console.log("Handler response:", response); // Add this log
+
         try {
           const { data } = axios.post(
-            backendUrl + "/api/user/verify-payment",
+            backendUrl + "/api/user/verify-razorpay",
             response,
             {
               headers: { Authorization: `Bearer ${token}` }, // Pass the auth token in headers
             }
           );
+          console.log("Verify payment response:", data); // Add this log
           if (data.success) {
+            // // Update the UI instantly
+            setAppointments((prevAppointments) =>
+              prevAppointments.map((appointment) =>
+                appointment._id === order.receipt
+                  ? { ...appointment, payment: true }
+                  : appointment
+              )
+            );
+
+            // Fetch from the server to ensure consistency
             getUserAppointments();
+            toast.success("Payment successful!");
             navigate("/my-appointments");
           }
-        } catch (error) {}
+        } catch (error) {
+          console.error("Error verifying payment:", error); // Add this log
+          toast.error("Payment verification failed.");
+        }
       },
     };
 
@@ -88,7 +111,10 @@ const MyAppointments = () => {
       );
 
       if (data.success) {
-        initPay(data.order);
+        // Pass the appointment ID as the receipt to track it later
+        console.log("data.order",data.order)
+        initPay({ ...data.order, receipt: appointmentId });
+        // initPay(data.order);
       }
     } catch (error) {
       console.log(error);
