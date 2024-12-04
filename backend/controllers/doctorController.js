@@ -62,44 +62,91 @@ const doctorAppointments = async (req, res) => {
     console.log(error);
     res.json({ success: false, message: error.message });
   }
-}
+};
 
 // API to mark appointment completed in Doctor panel
 const appointmentComplete = async (req, res) => {
   try {
     const { docId, appointmentId } = req.body;
-    const appointmentData = await appointmentModel.findById( appointmentId );
+    const appointmentData = await appointmentModel.findById(appointmentId);
 
     if (appointmentData && appointmentData.docId === docId) {
-      await appointmentModel.findByIdAndUpdate(appointmentId, {isCompleted: true})
+      await appointmentModel.findByIdAndUpdate(appointmentId, {
+        isCompleted: true,
+      });
       return res.json({ success: true, message: "Aappointment completed" });
     } else {
       return res.json({ success: false, message: "Mark Failed" });
     }
-
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
   }
-}
+};
 
 // API to cancel appointment in Doctor panel
 const appointmentCancel = async (req, res) => {
   try {
     const { docId, appointmentId } = req.body;
-    const appointmentData = await appointmentModel.findById( appointmentId );
+    const appointmentData = await appointmentModel.findById(appointmentId);
 
     if (appointmentData && appointmentData.docId === docId) {
-      await appointmentModel.findByIdAndUpdate(appointmentId, {cancelled: true})
+      await appointmentModel.findByIdAndUpdate(appointmentId, {
+        cancelled: true,
+      });
       return res.json({ success: true, message: "Aappointment cancelled" });
     } else {
       return res.json({ success: false, message: "Cancellation Failed" });
     }
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+// API to get dashboard data for doctor panel
+
+const doctorDashboard = async (req, res) => {
+  try {
+    const { docId } = req.body;
+    const appointments = await appointmentModel.find({docId});
+
+    let earnings = 0;
+
+    appointments.map((item) => {
+      if (item.isCompleted || item.payment) {
+        earnings += item.amount;
+      }
+    });
+
+    let patients = [];
+
+    appointments.map((item) => {
+      if (!patients.includes(item.userId)) {
+        patients.push(item.userId)
+      }
+    });
+
+    const dashData = {
+      earnings,
+      appointments: appointments.length,
+      patients: patients.length,
+      latestAppointments: appointments.slice(0,5)
+    }
+    res.json({ success: true, dashData})
 
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
   }
-}
+};
 
-export { changeAvailability, doctorsList, loginDoctor, doctorAppointments, appointmentComplete , appointmentCancel};
+export {
+  changeAvailability,
+  doctorsList,
+  loginDoctor,
+  doctorAppointments,
+  appointmentComplete,
+  appointmentCancel,
+  doctorDashboard,
+};

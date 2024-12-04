@@ -7,20 +7,21 @@ export const DoctorContext = createContext();
 const DoctorContextProvider = (props) => {
   const [dToken, setDToken] = useState(localStorage.getItem("dToken") || "");
   const [appointments, setAppointments] = useState([]);
+  const [dashboardData, setDashboardData] = useState(false);
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
-  const currency = '₹'
+  const currency = "₹";
 
   const getAppointments = async () => {
     try {
       const { data } = await axios.get(
-        backendUrl + "/api/doctor/appointments/", 
+        backendUrl + "/api/doctor/appointments/",
         { headers: { Authorization: `Bearer ${dToken}` } }
       );
 
       if (data.success) {
         setAppointments(data.appointments);
-        console.log("data.appointments ...",data.appointments)
+        console.log("data.appointments ...", data.appointments);
       } else {
         toast.error(data.message);
       }
@@ -48,7 +49,6 @@ const DoctorContextProvider = (props) => {
     }
   };
 
-
   const cancelAppointment = async (appointmentId) => {
     try {
       const { data } = await axios.post(
@@ -68,6 +68,22 @@ const DoctorContextProvider = (props) => {
     }
   };
 
+  const getDashboardData = async () => {
+    try {
+      const { data } = await axios.get(backendUrl + "/api/doctor/dashboard", {
+        headers: { Authorization: `Bearer ${dToken}` },
+      });
+      if (data.success) {
+        setDashboardData(data.dashData);
+        console.log(data.dashData)
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   return (
     <DoctorContext.Provider
       value={{
@@ -79,7 +95,10 @@ const DoctorContextProvider = (props) => {
         setAppointments,
         getAppointments,
         completeAppointment,
-        cancelAppointment
+        cancelAppointment,
+        dashboardData,
+        setDashboardData,
+        getDashboardData
       }}
     >
       {props.children}
