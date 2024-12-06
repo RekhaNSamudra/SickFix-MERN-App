@@ -90,6 +90,11 @@ const Appointment = () => {
       return navigate("/login");
     }
 
+    if (!docInfo.available) {
+      toast.error("Doctor not available");
+      return;
+    }
+
     try {
       const date = docSlots[slotIndex].date;
 
@@ -159,10 +164,10 @@ const Appointment = () => {
                 </p>
               </div>
               <p className="text-gray-500 mt-4 font-medium">
-                Appointment fee:
+                Appointment fee: &nbsp;
                 <span className="text-gray-700">
                   {currencySymbol}
-                  {docInfo.fees}
+                  {docInfo.fees*10}
                 </span>
               </p>
             </div>

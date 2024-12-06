@@ -56,24 +56,21 @@ const MyAppointments = () => {
   const initPay = (order) => {
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount: order.amount * 10,
+      amount: order.amount,
       currency: order.currency,
       name: "Appointment Payment",
       description: "Appointment Payment",
       order_id: order.id,
       receipt: order.receipt,
       handler: async (response) => {
-        console.log("Handler response:", response); // Add this log
-
         try {
-          const { data } = axios.post(
+          const { data } = await axios.post(
             backendUrl + "/api/user/verify-razorpay",
             response,
             {
               headers: { Authorization: `Bearer ${token}` }, // Pass the auth token in headers
             }
           );
-          console.log("Verify payment response:", data); // Add this log
           if (data.success) {
             // // Update the UI instantly
             setAppointments((prevAppointments) =>
@@ -112,7 +109,7 @@ const MyAppointments = () => {
 
       if (data.success) {
         // Pass the appointment ID as the receipt to track it later
-        console.log("data.order",data.order)
+        console.log("data.order", data.order);
         initPay({ ...data.order, receipt: appointmentId });
         // initPay(data.order);
       }
@@ -134,7 +131,6 @@ const MyAppointments = () => {
         My Appointments
       </p>
       <div>
-        {console.log("appointments ,", appointments)}
         {appointments.map((item, index) => (
           <div
             className="grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-2 border-b my-4"
@@ -162,7 +158,11 @@ const MyAppointments = () => {
             </div>
 
             <div className="flex flex-col justify-end gap-4 text-sm text-stone-500 text-center">
-              {item.cancelled ? (
+              {item.isCompleted ? (
+                <button className="border border-green-500 bg-green-100 text-green-700 rounded sm:min-w-48 py-2">
+                  Appointment Completed
+                </button>
+              ) : item.cancelled ? (
                 <button className="border border-red-500 text-red-500 rounded sm:min-w-48 py-2">
                   Appointment Cancelled
                 </button>

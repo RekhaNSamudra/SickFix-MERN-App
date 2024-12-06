@@ -12,7 +12,7 @@ const Dashboard = () => {
     if (aToken) {
       getDashboardData();
     }
-  }, [aToken]);
+  }, [aToken, dashboardData]);
 
   const cards = [
     {

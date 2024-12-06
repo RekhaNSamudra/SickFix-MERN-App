@@ -109,7 +109,7 @@ const appointmentCancel = async (req, res) => {
 const doctorDashboard = async (req, res) => {
   try {
     const { docId } = req.body;
-    const appointments = await appointmentModel.find({docId});
+    const appointments = await appointmentModel.find({ docId });
 
     let earnings = 0;
 
@@ -123,7 +123,7 @@ const doctorDashboard = async (req, res) => {
 
     appointments.map((item) => {
       if (!patients.includes(item.userId)) {
-        patients.push(item.userId)
+        patients.push(item.userId);
       }
     });
 
@@ -131,10 +131,36 @@ const doctorDashboard = async (req, res) => {
       earnings,
       appointments: appointments.length,
       patients: patients.length,
-      latestAppointments: appointments.slice(0,5)
-    }
-    res.json({ success: true, dashData})
+      latestAppointments: appointments.slice(0, 5),
+    };
+    res.json({ success: true, dashData });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
 
+// API to get doctor profile for doctor panel
+
+const doctorProfile = async (req, res) => {
+  try {
+    const { docId } = req.body;
+    const profileData = await doctorModel.findById(docId).select("-password");
+    res.json({ success: true, profileData });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+// API to update doctor profile for doctor panel
+
+const updateDoctorProfile = async (req, res) => {
+  try {
+    const { docId, fees, address, available } = req.body;
+    await doctorModel.findByIdAndUpdate(docId, { available, fees, address });
+
+    res.json({ success: true, message: "Profile Updated" });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
@@ -149,4 +175,6 @@ export {
   appointmentComplete,
   appointmentCancel,
   doctorDashboard,
+  doctorProfile,
+  updateDoctorProfile,
 };

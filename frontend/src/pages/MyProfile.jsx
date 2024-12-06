@@ -85,7 +85,7 @@ const MyProfile = () => {
       }
     }
   };
-
+console.log("first", userData)
   return (
     userData && (
       <div className="ml-20 sm:mx-24 md:mx-28 lg:mx-32 overflow-x-hidden mt-10">

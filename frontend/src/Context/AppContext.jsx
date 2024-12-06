@@ -12,7 +12,7 @@ const AppContextProvider = ({ children }) => {
   );
   const [userData, setUserData] = useState(false);
 
-  const currencySymbol = "$";
+  const currencySymbol = "₹";
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const getDoctorsData = async () => {
@@ -54,6 +54,7 @@ const AppContextProvider = ({ children }) => {
     token ? loadUserProfileData() : setUserData(false);
   }, [token]);
 
+  
   return (
     <AppContext.Provider
       value={{

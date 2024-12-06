@@ -35,7 +35,7 @@ const LatestBookings = ({
 
             {item.cancelled ? (
               <p className="text-red-500 text-sm font-medium">Cancelled</p>
-            ) : isDoctorView && item.isCompleted ? (
+            ) : item.isCompleted ? (
               <p className="text-xs font-medium text-green-500">Completed</p>
             ) : (
               <div className="flex">

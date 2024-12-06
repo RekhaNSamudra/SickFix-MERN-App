@@ -5,9 +5,10 @@ import { AppContext } from "../../context/AppContext";
 import { assets } from "../../assets/assets_admin/assets";
 
 const AllAppointments = () => {
-  const { aToken, appointments, getAllAppointments, cancelAppointments } = useContext(AdminContext);
-  const { calculateAge, currency } = useContext(AppContext);
-  
+  const { aToken, appointments, getAllAppointments, cancelAppointments } =
+    useContext(AdminContext);
+  const { currency } = useContext(AppContext);
+
   useEffect(() => {
     if (aToken) {
       getAllAppointments();
@@ -18,19 +19,19 @@ const AllAppointments = () => {
     <div className="w-full max-w-6xl m-5">
       <p className="mb-3 text-lg font-medium">All Appointments</p>
       <div className="bg-white border rounded text-sm overflow-y-scroll max-h-[80vh] min-h-[60vh]">
-        <div className="hidden sm:grid grid-cols-[0.5fr_3fr_1fr_3fr_3fr_1fr_1fr] grid-flow-col py-3 px-6 border-b">
+        <div className="hidden sm:grid grid-cols-[0.5fr_2.5fr_3fr_3fr_1fr_2fr] grid-flow-col py-3 px-6 border-b">
           <p>#</p>
           <p>Patient</p>
-          <p>Age</p>
+          {/* <p>Age</p> */}
           <p>Date & Time</p>
           <p>Doctor</p>
           <p>Fees</p>
           <p>Actions</p>
         </div>
 
-        {appointments.reverse().map((item, index) => (
+        {appointments.slice().reverse().map((item, index) => (
           <div
-            className="flex flex-wrap justify-between items-center max-sm:gap-2 sm:grid sm:grid-cols-[0.5fr_3fr_1fr_3fr_3fr_1fr_1fr] text-gray-500 border-b px-6 py-3 hover:bg-gray-100"
+            className="flex flex-wrap justify-between items-center max-sm:gap-2 sm:grid sm:grid-cols-[0.5fr_2.5fr_3fr_3fr_1fr_2fr] text-gray-500 border-b px-6 py-3 hover:bg-gray-100"
             key={index}
           >
             <p className="max-sm:hidden">{index + 1}</p>
@@ -42,8 +43,8 @@ const AllAppointments = () => {
               />
               <p>{item.userData.name}</p>
             </div>
-            {console.log("item.userData.dob", item.userData.dob)}
-            <p className="max-sm:hidden">{calculateAge(item.userData.dob)}</p>
+            {/* {console.log("item.userData.dob", item.userData)}
+            <p className="max-sm:hidden">{calculateAge(item.userData.dob)}</p> */}
             <p>
               {item.slotTime}, &nbsp;{item.slotDate}
             </p>
@@ -61,6 +62,8 @@ const AllAppointments = () => {
             </p>
             {item.cancelled ? (
               <p className="text-red-500 text-sm font-medium">Cancelled</p>
+            ) : item.isCompleted ? (
+              <p className="text-green-500 text-sm font-medium">Completed</p>
             ) : (
               <img
                 onClick={() => cancelAppointments(item._id)}

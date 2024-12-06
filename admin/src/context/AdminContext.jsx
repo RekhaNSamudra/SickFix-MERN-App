@@ -37,7 +37,7 @@ const AdminContextProvider = ({ children }) => {
     if (aToken) {
       getAllDoctors();
     }
-  }, [aToken]);
+  }, [aToken, dashboardData]);
 
   const getAllAppointments = async () => {
     try {

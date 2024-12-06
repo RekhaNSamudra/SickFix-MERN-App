@@ -6,6 +6,7 @@ import { v2 as cloudinary } from "cloudinary";
 import doctorModel from "../models/doctorModels.js";
 import appointmentModel from "../models/appointmentModel.js";
 import razorpay from "razorpay";
+import crypto from "crypto";
 
 // API to register user
 const registerUser = async (req, res) => {
@@ -263,7 +264,7 @@ const paymentRazorpay = async (req, res) => {
 
     // creating options for razorpay payments
     const options = {
-      amount: appointmentData.amount * 10,
+      amount: appointmentData.amount * 1000,
       currency: process.env.CURRENCY,
       receipt: appointmentId,
     };
@@ -279,26 +280,45 @@ const paymentRazorpay = async (req, res) => {
 };
 
 // API to verify razorpay payment
+
 const verifyPayment = async (req, res) => {
   try {
-    const { razorpay_order_id } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
+    // Validate the Razorpay payment signature
+    const generatedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+      .digest("hex");
+
+    if (generatedSignature !== razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment signature",
+      });
+    }
+
+    // Fetch the order information to confirm the status
     const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id);
 
-    console.log("order info...", orderInfo)
     if (orderInfo.status === "paid") {
+      // Update the appointment as paid
       await appointmentModel.findByIdAndUpdate(orderInfo.receipt, {
         payment: true,
       });
-      res.json({ success: true, message: "Payment Successful" });
+  
+      console.log("Fetched orderInfo:", orderInfo);
+      
+      res.status(200).json({ success: true, message: "Payment successful" });
     } else {
-      res.json({ success: false, message: "Payment Failed" });
+      res.status(400).json({ success: false, message: "Payment not successful" });
     }
   } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: error.message });
+    console.error("Error verifying payment:", error);
+    res.status(500).json({ success: false, message: "Payment verification failed" });
   }
 };
+
 
 export {
   registerUser,
