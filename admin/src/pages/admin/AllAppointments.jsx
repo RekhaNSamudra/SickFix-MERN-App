@@ -13,7 +13,7 @@ const AllAppointments = () => {
     if (aToken) {
       getAllAppointments();
     }
-  }, [aToken]);
+  }, [aToken, appointments]);
 
   return (
     <div className="w-full max-w-6xl m-5">
@@ -22,7 +22,6 @@ const AllAppointments = () => {
         <div className="hidden sm:grid grid-cols-[0.5fr_2.5fr_3fr_3fr_1fr_2fr] grid-flow-col py-3 px-6 border-b">
           <p>#</p>
           <p>Patient</p>
-          {/* <p>Age</p> */}
           <p>Date & Time</p>
           <p>Doctor</p>
           <p>Fees</p>
@@ -43,8 +42,6 @@ const AllAppointments = () => {
               />
               <p>{item.userData.name}</p>
             </div>
-            {/* {console.log("item.userData.dob", item.userData)}
-            <p className="max-sm:hidden">{calculateAge(item.userData.dob)}</p> */}
             <p>
               {item.slotTime}, &nbsp;{item.slotDate}
             </p>
@@ -58,7 +55,7 @@ const AllAppointments = () => {
             </div>
             <p>
               {currency}
-              {item.amount * 10}
+              {item.amount}
             </p>
             {item.cancelled ? (
               <p className="text-red-500 text-sm font-medium">Cancelled</p>

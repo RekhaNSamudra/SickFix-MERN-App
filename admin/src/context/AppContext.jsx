@@ -6,7 +6,7 @@ const AppContextProvider = (props) => {
   const currency = '₹'
   
   return (
-    <AppContext.Provider value={{ calculateAge, currency }}>
+    <AppContext.Provider value={{ currency }}>
       {props.children}
     </AppContext.Provider>
   );

@@ -7,6 +7,10 @@ const TopDoctors = () => {
   const navigate = useNavigate();
   const { doctors, getDoctorsData } = useContext(AppContext);
 
+  useEffect(()=> {
+    getDoctorsData()
+  })
+
   return (
     <div className="flex flex-col items-center gap-4 mx-12 sm:mx-24 md:mx-28 lg:mx-32 my-8 text-gray-900">
       <h1 className="text-xl sm:text-3xl sm:font-medium">

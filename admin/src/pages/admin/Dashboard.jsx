@@ -5,36 +5,44 @@ import DashboardCard from "../../Components/DashboardCard";
 import LatestBookings from "../../Components/LatestBookings";
 
 const Dashboard = () => {
-  const { aToken, getDashboardData, cancelAppointments, dashboardData } =
-    useContext(AdminContext);
+  const { cancelAppointments, aToken, dashboardData, getDashboardData, loading } = useContext(AdminContext);
 
   useEffect(() => {
     if (aToken) {
       getDashboardData();
     }
-  }, [aToken, dashboardData]);
+  }, [aToken]);
+
+  if (loading) {
+    return <div>Loading...</div>; // Show loading state
+  }
+
+  if (!dashboardData) {
+    return <div>No data available</div>; // Handle case if no data is available
+  }
+
 
   const cards = [
     {
       icon: assets.doctor_icon,
-      value: dashboardData.doctors,
+      value: dashboardData?.doctors,
       label: "Doctors",
     },
     {
       icon: assets.appointments_icon,
-      value: dashboardData.appointments,
+      value: dashboardData?.appointments,
       label: "Appointments",
     },
     {
       icon: assets.patients_icon,
-      value: dashboardData.patients,
+      value: dashboardData?.patients,
       label: "Patients",
     },
   ];
 
   return (
     dashboardData && (
-      <div className="m-5">
+      <div className="w-full m-5">
         <div className="flex flex-wrap gap-3">
           {cards.map((card, index) => (
             <DashboardCard key={index} {...card} />

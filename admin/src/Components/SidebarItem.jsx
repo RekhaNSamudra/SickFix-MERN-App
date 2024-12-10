@@ -15,7 +15,7 @@ const SidebarItem = ({ token, navLinks }) => {
           key={label}
           to={to}
         >
-          <img src={icon} alt="" />
+          <img className="w-6 h-6 md:w-8 md:h-8" src={icon} alt="" />
           <p className="hidden md:block">{label}</p>
         </NavLink>
       ))}

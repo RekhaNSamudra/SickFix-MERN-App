@@ -16,7 +16,6 @@ const Login = () => {
   const { token, backendUrl, setToken } = useContext(AppContext);
   const navigate = useNavigate();
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser((prevUser) => ({
@@ -25,48 +24,51 @@ const Login = () => {
     }));
   };
 
+  
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+  
+    // Check if a user is already logged in
+    if (localStorage.getItem("token")) {
+      toast.error("Please log out before registering or logging in as a new user.");
+      return;
+    }
+  
+    const endpoint = login === "Sign Up" ? "/api/user/register" : "/api/user/login";
+    const payload =
+      login === "Sign Up"
+        ? { email: user.email, name: user.name, password: user.password }
+        : { email: user.email, password: user.password };
+  
     try {
-      if (login === "Sign Up") {
-        const { data } = await axios.post(
-          backendUrl + "/api/user/register",
-          {
-            email: user.email,  
-            name: user.name,    
-            password: user.password,
-          },
-          {
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-        if (data.success) {
-          localStorage.setItem("token", data.token);
-          setToken(data.token);
-          toast.success("Registered successfully");
+      const { data } = await axios.post(`${backendUrl}${endpoint}`, payload, {
+        headers: { "Content-Type": "application/json" },
+      });
+  
+      if (data.success) {
+        if (login === "Sign Up") {
+          setLogin("login");
+          toast.success("Registered successfully, please log in");
         } else {
-          toast.error(data.message);
-        }
-      } else {
-        const { data } = await axios.post(backendUrl + "/api/user/login", {
-          email: user.email,  
-          password: user.password,
-        });
-        if (data.success) {
           localStorage.setItem("token", data.token);
           setToken(data.token);
           toast.success("Login successful");
-          navigate("/"); 
+          navigate("/");
+        }
+      } else {
+        if (data.message === "User already exists. Please login") {
+          setLogin("login"); // Switch to Login UI
+          toast.error("User already exists, redirecting to login...");
         } else {
           toast.error(data.message);
         }
       }
+
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || "An error occurred");
     }
   };
-
-  // console.log("user", user.email, user.password, user.name);
+  
 
   return (
     <>

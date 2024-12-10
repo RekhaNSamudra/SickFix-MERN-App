@@ -27,6 +27,12 @@ const registerUser = async (req, res) => {
       return res.json({ success: false, message: "Enter a strong password" });
     }
 
+      // Check if the user already exists
+      const existingUser = await userModel.findOne({ email: email.toLowerCase() });
+      if (existingUser) {
+        return res.json({ success: false, message: "User already exists. Please login" });
+      }
+
     // Hash the user's password for secure storage
     const salt = await bcrypt.genSalt(10); // Generate a salt
     const hashedPassword = await bcrypt.hash(password, salt); // Hash the password with the salt
@@ -264,7 +270,7 @@ const paymentRazorpay = async (req, res) => {
 
     // creating options for razorpay payments
     const options = {
-      amount: appointmentData.amount * 1000,
+      amount: appointmentData.amount * 100,
       currency: process.env.CURRENCY,
       receipt: appointmentId,
     };

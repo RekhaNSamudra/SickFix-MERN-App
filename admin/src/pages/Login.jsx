@@ -35,7 +35,6 @@ const Login = () => {
       const { data } = await axios.post(`${backendUrl}${endpoint}`, formData);
   
       if (data.success) {
-        console.log("token", data.token);
         localStorage.setItem(tokenKey, data.token);
         setToken(data.token); // Updates context with the token
         toast.success("Login successful!");
@@ -43,7 +42,6 @@ const Login = () => {
         toast.error(data.message);
       }
     } catch (error) {
-      console.error("Login failed", error);
       toast.error("Something went wrong. Please try again.");
     }
   };

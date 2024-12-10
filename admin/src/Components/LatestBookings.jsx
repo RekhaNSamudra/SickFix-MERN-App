@@ -9,13 +9,13 @@ const LatestBookings = ({
 }) => {
   return (
     <>
-      <div className="bg-white">
+      <div className="bg-white w-[250px] sm:w-[650px]">
         <div className="flex items-center gap-2.5 p-4 mt-10 rounded-t border">
           <img src={assets.list_icon} alt="" />
           <p className="font-semibold"> Latest Bookings</p>
         </div>
       </div>
-      <div className="pt-10 border border-t-0">
+      <div className="pt-10 border border-t-0  w-[250px] sm:w-[650px]">
         {bookings.map((item, index) => (
           <div
             key={index}

@@ -98,6 +98,7 @@ const MyAppointments = () => {
   };
 
   const appointmentRazorpay = async (appointmentId) => {
+    console.log("clicked")
     try {
       const { data } = await axios.post(
         backendUrl + "/api/user/payment-razorpay",
@@ -123,7 +124,7 @@ const MyAppointments = () => {
     if (token) {
       getUserAppointments();
     }
-  }, [token]);
+  }, [token, appointments]);
 
   return (
     <div className="mx-16 sm:mx-24 md:mx-28 lg:mx-32 overflow-x-hidden">

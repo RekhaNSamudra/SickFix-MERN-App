@@ -85,7 +85,7 @@ const DoctorProfile = () => {
                     value={profileData.fees}
                   />
                 ) : (
-                  profileData.fees
+                  profileData.fees 
                 )}
               </span>
             </p>

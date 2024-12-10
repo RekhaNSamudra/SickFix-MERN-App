@@ -89,8 +89,8 @@ const AddDoctor = () => {
   };
 
   return (
-    <div className="w-full">
-      <p className="text-lg font-medium p-5 mt-3">Add Doctor</p>
+    <div className="w-full max-w-6xl m-2">
+      <p className="text-lg font-medium p-5 mt-1">Add Doctor</p>
       <form className="m-5 w-full mt-0" onSubmit={handleSubmit}>
         <div className="bg-white p-8 rounded w-full border max-w-4xl max-h-[80vh] overflow-y-scroll">
           <div className="flex items-center gap-4 mb-8 text-gray-500 ">
